@@ -1,3 +1,61 @@
+# Udacity PathPlanning Project
+
+### Goals
+The goal of the project is to safely navigate around a virtual highway with other traffic that is driving +-10 MPH of 
+the 50 MPH speed limit. The simulator provides the car's localization and sensor fusion data, there is also a sparse 
+map list of waypoints around the highway. The car tries to go as close as possible to the 50 MPH speed limit,
+ which means passing slower traffic when possible, note that other cars will try to change lanes too. 
+ The car avoids hitting other cars at all cost as well as driving inside of the marked road lanes at all times, 
+ unless going from one lane to another. The car will able to make one complete loop around the 6946m highway.
+  Since the car is trying to go 50 MPH, it should take a little over 5 minutes to complete 1 loop. 
+  Also the car does not experience total acceleration over 10 m/s^2 and jerk that is greater than 10 m/s^3.
+         
+## Rubric Criteria
+
+####The car is able to drive at least 4.32 miles without incident..
+![4.38 miles](./data/milesDriven.png)
+
+####The car drives according to the speed limit.
+There were no speed limit violations
+
+####Max Acceleration and Jerk are not Exceeded.
+Acceleration was below 10 m/s^2 and jerk was below 10 m/s^3
+
+####Car does not have collisions.
+There were no collision events
+
+####The car stays in its lane, except for the time between changing lanes.
+The car tends to stay in the center lane. Lane change only happens if its blocked.
+
+####The car is able to change lanes
+The car changes lanes to maintain 50 mph speed
+
+## Reflection
+
+### Behaviour Planning Steps
+The path planning program consists of the following steps:
+1. Parse the sensor fusion list and determine the lanes used by the car around ego car.
+2. A lane is considered occupied, if the candidate vehicle is 30 m behind or ahead of the ego car in frenet coordinates
+3. Car behaviour: [line 154 to line 177](./src/main.cpp#L154)
+    * If the center lane is not occupied move to center lane and stay there
+    * If there is a car ahead try to move to the left lane if:
+        * available and
+        * lane is not occupied
+    * If the above step doesn't work try to move to the right lane if:
+        * available and
+        * lane is not occupied
+    * [If none of the alternatives work keep following the closest in path vehicle](./src/main.cpp#L166)
+ 
+###Path Generation  ([line 180 to line 293](./src/main.cpp#L180))       
+The path planning code is invoked every few tens of milliseconds. Along with car's position, it also returns the 
+previous waypoints that are not used. The last two waypoints are used to generate the anchor points for the future
+spline trajectory. In case the simulator consumes all the waypoints, before the next iteration of path planning, the 
+car's position and yaw information are used to generate the spline root anchor points 
+([line 191 to line 217](./src/main.cpp#L180)). The target anchor points for the spline is obtained from the target 
+lane assigned by the [behaviour code](./src/main.cpp#L171). These anchor points are
+used to create a spline trajectory. The car in the simulator takes the position given as a points list to it every 
+0.02 s. The spline generated is interpolated so that the velocity, acceleration and jerk are minimized.   
+
 # CarND-Path-Planning-Project
 Self-Driving Car Engineer Nanodegree Program
    
@@ -9,8 +67,7 @@ To run the simulator on Mac/Linux, first make the binary file executable with th
 sudo chmod u+x {simulator_file_name}
 ```
 
-### Goals
-In this project your goal is to safely navigate around a virtual highway with other traffic that is driving +-10 MPH of the 50 MPH speed limit. You will be provided the car's localization and sensor fusion data, there is also a sparse map list of waypoints around the highway. The car should try to go as close as possible to the 50 MPH speed limit, which means passing slower traffic when possible, note that other cars will try to change lanes too. The car should avoid hitting other cars at all cost as well as driving inside of the marked road lanes at all times, unless going from one lane to another. The car should be able to make one complete loop around the 6946m highway. Since the car is trying to go 50 MPH, it should take a little over 5 minutes to complete 1 loop. Also the car should not experience total acceleration over 10 m/s^2 and jerk that is greater than 10 m/s^3.
+
 
 #### The map of the highway is in data/highway_map.txt
 Each waypoint in the list contains  [x,y,s,dx,dy] values. x and y are the waypoint's map coordinate position, the s value is the distance along the road to get to that waypoint in meters, the dx and dy values define the unit normal vector pointing outward of the highway loop.
@@ -91,55 +148,3 @@ A really helpful resource for doing this project and creating smooth trajectorie
     cd uWebSockets
     git checkout e94b6e1
     ```
-
-## Editor Settings
-
-We've purposefully kept editor configuration files out of this repo in order to
-keep it as simple and environment agnostic as possible. However, we recommend
-using the following settings:
-
-* indent using spaces
-* set tab width to 2 spaces (keeps the matrices in source code aligned)
-
-## Code Style
-
-Please (do your best to) stick to [Google's C++ style guide](https://google.github.io/styleguide/cppguide.html).
-
-## Project Instructions and Rubric
-
-Note: regardless of the changes you make, your project must be buildable using
-cmake and make!
-
-
-## Call for IDE Profiles Pull Requests
-
-Help your fellow students!
-
-We decided to create Makefiles with cmake to keep this project as platform
-agnostic as possible. Similarly, we omitted IDE profiles in order to ensure
-that students don't feel pressured to use one IDE or another.
-
-However! I'd love to help people get up and running with their IDEs of choice.
-If you've created a profile for an IDE that you think other students would
-appreciate, we'd love to have you add the requisite profile files and
-instructions to ide_profiles/. For example if you wanted to add a VS Code
-profile, you'd add:
-
-* /ide_profiles/vscode/.vscode
-* /ide_profiles/vscode/README.md
-
-The README should explain what the profile does, how to take advantage of it,
-and how to install it.
-
-Frankly, I've never been involved in a project with multiple IDE profiles
-before. I believe the best way to handle this would be to keep them out of the
-repo root to avoid clutter. My expectation is that most profiles will include
-instructions to copy files to a new location to get picked up by the IDE, but
-that's just a guess.
-
-One last note here: regardless of the IDE used, every submitted project must
-still be compilable with cmake and make./
-
-## How to write a README
-A well written README file can enhance your project and portfolio.  Develop your abilities to create professional README files by completing [this free course](https://www.udacity.com/course/writing-readmes--ud777).
-
