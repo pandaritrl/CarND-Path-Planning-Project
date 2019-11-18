@@ -12,22 +12,22 @@ map list of waypoints around the highway. The car tries to go as close as possib
          
 ## Rubric Criteria
 
-####The car is able to drive at least 4.32 miles without incident..
+#### The car is able to drive at least 4.32 miles without incident..
 ![4.38 miles](./data/milesDriven.png)
 
-####The car drives according to the speed limit.
+#### The car drives according to the speed limit.
 There were no speed limit violations
 
-####Max Acceleration and Jerk are not Exceeded.
+#### Max Acceleration and Jerk are not Exceeded.
 Acceleration was below 10 m/s^2 and jerk was below 10 m/s^3
 
-####Car does not have collisions.
+#### Car does not have collisions.
 There were no collision events
 
-####The car stays in its lane, except for the time between changing lanes.
+#### The car stays in its lane, except for the time between changing lanes.
 The car tends to stay in the center lane. Lane change only happens if its blocked.
 
-####The car is able to change lanes
+#### The car is able to change lanes
 The car changes lanes to maintain 50 mph speed
 
 ## Reflection
@@ -47,7 +47,7 @@ frenet coordinates
         * lane is not occupied
     * [If none of the alternatives work keep following the closest in path vehicle](./src/main.cpp#L166)
  
-###Path Generation  ([line 180 to line 293](./src/main.cpp#L180))       
+### Path Generation  ([line 180 to line 293](./src/main.cpp#L180))       
 The path planning code is invoked every few tens of milliseconds. Along with car's position, the simulator also returns the 
 previous waypoints that are not used to the trajectory planning code. The last two waypoints in the previous waypoints
  list are used to generate the anchor points for the future
